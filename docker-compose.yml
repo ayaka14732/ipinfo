@@ -2,9 +2,12 @@
 version: "2"
 
 services:
-  ipinfo.tw:
-    container_name: ipinfo.tw
-    image: peterdavehello/ipinfo.tw:latest
+  ipinfo:
+    build:
+      context: .
+      args:
+        MAXMIND_LICENSE_KEY: ${MAXMIND_LICENSE_KEY}
+    image: ipinfo:local
     ports:
-      - "127.0.0.1:80:8080"
+      - "127.0.0.1:8085:8080"
     restart: unless-stopped

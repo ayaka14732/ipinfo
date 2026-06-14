@@ -6,7 +6,7 @@
 
 [![Docker Hub badge](http://dockeri.co/image/peterdavehello/ipinfo.tw)](https://hub.docker.com/r/peterdavehello/ipinfo.tw/)
 
-A self-hosted, non-tracking, and ad-free solution to reveal client-side IP info like IP address, country, [AS][1] number/description, and additionally, [user agent][2].
+A self-hosted, non-tracking, and ad-free solution to reveal client-side IP info like IP address, city, country, [AS][1] number/description, and additionally, [user agent][2].
 
 ## Table of Contents
 
@@ -34,9 +34,9 @@ Please note that for response integrity and privacy concerns, this demo is behin
 
 You can now directly deploy ipinfo.tw project on **DigitalOcean App Platform** using the deploy button:
 
-[![Deploy to DO](https://mp-assets1.sfo2.digitaloceanspaces.com/deploy-to-do/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/PeterDaveHello/ipinfo.tw/tree/DigitalOceanAppPlatform&refcode=1fdd0a1d695a)
+[![Deploy to DO](https://mp-assets1.sfo2.digitaloceanspaces.com/deploy-to-do/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/ayaka14732/ipinfo/tree/DigitalOceanAppPlatform&refcode=1fdd0a1d695a)
 
-On DigitalOcean App Platform, we use the HTTP header `DO-Connecting-IP` as client's IP address, for more technical details, check the [DigitalOceanAppPlatform branch](https://github.com/PeterDaveHello/ipinfo.tw/tree/DigitalOceanAppPlatform).
+On DigitalOcean App Platform, we use the HTTP header `DO-Connecting-IP` as client's IP address, for more technical details, check the [DigitalOceanAppPlatform branch](https://github.com/ayaka14732/ipinfo/tree/DigitalOceanAppPlatform).
 
 ### Server side
 
@@ -55,23 +55,18 @@ Use any http(s) client to explore the server, e.g. https://ipinfo.tw,
 - `wget -qO- https://ipinfo.tw`
 - `curl https://ipinfo.tw`
 
-Without any specified URI, the server will return IP address, country, and AS.
+Without any specified URI, the server will return IP address, city, country, and AS.
 
 If you prefer to receive a machine-readable result, use path `/json` (without trailing slash), e.g. `https://ipinfo.tw/json`, the result will look like:
 
 ```json
-{"ip":"3.115.123.234","country_code":"JP","country_name":"Japan","asn":"16509","as_desc":"Amazon.com, Inc.","user_agent":"curl/7.58.0"}
+{"ip":"3.115.123.234","country_code":"JP","country_name":"Japan","city_name":"Tokyo","subdivision_code":"13","subdivision_name":"Tokyo","postal_code":"102-0082","latitude":"35.6893","longitude":"139.6899","time_zone":"Asia/Tokyo","asn":"16509","as_desc":"Amazon.com, Inc.","user_agent":"curl/7.58.0"}
 ```
 
 #### Endpoints
 
 You can also specify the following URI to retrieve certain info:
 
-- `ip`: IP address
-- `country`: Country code and name
-- `country_code`: Country code
-- `country_name`: Country name
-- `as`: AS number and description
 - `asn`: AS number
 - `as_desc`: AS description
 - `user_agent`: User agent string
@@ -81,26 +76,9 @@ Examples:
 ```sh
 $ wget -qO- https://ipinfo.tw
 157.230.195.167
+Singapore / Singapore
 SG / Singapore
 AS14061 / DigitalOcean, LLC
-
-$ curl https://ipinfo.tw/ip
-18.179.200.1
-
-$ curl https://ipinfo.tw/country
-TW / Taiwan
-
-$ curl https://ipinfo.tw/country_code
-HK
-
-$ curl https://ipinfo.tw/country_name
-South Korea
-
-$ curl https://ipinfo.tw/as
-AS16509 / Amazon.com, Inc.
-
-$ curl https://ipinfo.tw/as
-AS8075 / Microsoft Corporation
 
 $ curl https://ipinfo.tw/asn
 15169
@@ -114,12 +92,12 @@ Wget
 
 ##### Database build time endpoint
 
-There is a special endpoint - `/build_epoch`, which will return a json object that contains two unsigned 64-bit integers of the database build timestamp as the Unix epoch value.
+There is a special endpoint - `/build_epoch`, which will return a json object that contains three unsigned 64-bit integers of the database build timestamp as the Unix epoch value.
 
 The response of `/build_epoch` will be look like:
 
 ```json
-{"GeoLite2-Country":"1655395486","GeoLite2-ASN":"1655730848"}
+{"GeoLite2-Country":"1655395486","GeoLite2-City":"1655395486","GeoLite2-ASN":"1655730848"}
 ```
 
 As mentioned above, on the demo domain - `ipinfo.tw`, if `https://` is not specified in the URL, connection will be redirected from http to https, in this case, `curl` will need an additional parameter: `-L`/`--location` to follow location redirection.
@@ -129,26 +107,17 @@ As mentioned above, on the demo domain - `ipinfo.tw`, if `https://` is not speci
 If you want to build your own image, instead of directly pull the pre-built one, clone this repository, and run `docker build` command, with build-arg `MAXMIND_LICENSE_KEY`, you need to provide your own MaxMind license key from https://www.maxmind.com/en/account, it's **free**.
 
 ```sh
-$ git clone --depth 1 https://github.com/PeterDaveHello/ipinfo.tw
-$ cd ipinfo.tw
-$ docker build --build-arg MAXMIND_LICENSE_KEY="$MY_MAXMIND_KEY" -t ipinfo.tw:custom-build .
+$ git clone --depth 1 https://github.com/ayaka14732/ipinfo
+$ cd ipinfo
+$ docker build --build-arg MAXMIND_LICENSE_KEY="$MY_MAXMIND_KEY" -t ipinfo:custom-build .
 ```
 
-Prefer `docker-compose`? Replace the existing `ipinfo.tw` service to build locally:
+Prefer `docker-compose`? Add `MAXMIND_LICENSE_KEY=your-license-key` to a local `.env` so `docker compose build` picks it up without leaving the secret in your shell history:
 
-```yaml
-services:
-  ipinfo.tw:
-    build:
-      context: .
-      args:
-        MAXMIND_LICENSE_KEY: ${MAXMIND_LICENSE_KEY}
-    image: ipinfo.tw:local
-    ports:
-      - "127.0.0.1:8080:8080"
+```sh
+$ docker compose build
+$ docker compose up -d
 ```
-
-Add `MAXMIND_LICENSE_KEY=your-license-key` to a local `.env` so `docker compose build` picks it up without leaving the secret in your shell history.
 
 ## Credits
 
