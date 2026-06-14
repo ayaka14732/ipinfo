@@ -55,7 +55,7 @@ Use any http(s) client to explore the server, e.g. https://ipinfo.tw,
 - `wget -qO- https://ipinfo.tw`
 - `curl https://ipinfo.tw`
 
-Without any specified URI, the server will return IP address, country, AS, and user agent.
+Without any specified URI, the server will return IP address, country, and AS.
 
 If you prefer to receive a machine-readable result, use path `/json` (without trailing slash), e.g. `https://ipinfo.tw/json`, the result will look like:
 
@@ -83,7 +83,6 @@ $ wget -qO- https://ipinfo.tw
 157.230.195.167
 SG / Singapore
 AS14061 / DigitalOcean, LLC
-Wget/1.17.1 (linux-gnu)
 
 $ curl https://ipinfo.tw/ip
 18.179.200.1
