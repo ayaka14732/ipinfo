@@ -75,10 +75,10 @@ Examples:
 
 ```sh
 $ wget -qO- https://ipinfo.tw
-157.230.195.167
-Singapore / Singapore
-SG / Singapore
-AS14061 / DigitalOcean, LLC
+82.132.232.118
+Lambeth / England
+GB / United Kingdom
+AS35228 / O2 UK
 
 $ curl https://ipinfo.tw/asn
 15169
